@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dev & Helper Toolkit — TRON Edition</title>
+  <style>
+    /* ----------------- TRON / Hi-Tech theme ----------------- */
+    :root{
+      --bg-1:#03040a;
+      --bg-2:#071028;
+      --panel:#071426;
+      --glass: rgba(255,255,255,0.03);
+      --neon-blue: #00d4ff;
+      --neon-violet: #8b5cf6;
+      --muted: #94a3b8;
+      --card-border: rgba(124,58,237,0.12);
+      --accent: linear-gradient(90deg, var(--neon-violet), var(--neon-blue));
+    }
+    html,body{height:100%;margin:0;padding:0;font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
+    body{
+      background:
+        radial-gradient(800px 400px at 10% 10%, rgba(14,30,64,0.18), transparent),
+        radial-gradient(800px 400px at 90% 90%, rgba(40,12,52,0.12), transparent),
+        linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      color:#e6f0ff;
+      -webkit-tap-highlight-color: transparent;
+      overflow:auto;
+    }
+
+    /* overall container */
+    .container{ max-width:1200px; margin:36px auto; padding:24px; box-sizing:border-box; position:relative; }
+
+    /* header */
+    header{
+      display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:18px;
+      border-radius:12px; padding:14px 18px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));
+      box-shadow: 0 6px 40px rgba(3,6,20,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+    .brand {
+      display:flex; gap:12px; align-items:center;
+    }
+    .logo {
+      width:54px; height:54px; border-radius:10px; display:inline-grid; place-items:center;
+      background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 6px 18px rgba(11,20,40,0.6), 0 0 18px rgba(0,212,255,0.03) inset;
+    }
+    .logo svg { filter: drop-shadow(0 6px 20px rgba(0,212,255,0.04)); }
+    h1{ font-size:18px; margin:0; letter-spacing:0.6px; color: #dbeeff; text-shadow: 0 2px 18px rgba(0,212,255,0.03); }
+    .subtitle{ font-size:13px; color:var(--muted); margin-top:3px; }
+
+    /* layout grid */
+    .grid{ display:grid; grid-template-columns:280px 1fr; gap:18px; align-items:start; }
+
+    /* sidebar */
+    aside{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.03); box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+    .tools-title{ font-weight:700; color:#eaf6ff; margin-bottom:6px; }
+    .small{ font-size:13px; color:var(--muted); }
+    .nav { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+    .nav button{
+      display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; background:transparent;
+      color: #cfefff; border:1px solid rgba(255,255,255,0.03); cursor:pointer; text-align:left; font-weight:600;
+      transition: all .16s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    }
+    .nav button:hover{ transform:translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.55); }
+    .nav button.active{
+      background: linear-gradient(180deg, rgba(139,92,246,0.08), rgba(0,212,255,0.04));
+      border: 1px solid rgba(0,212,255,0.18);
+      box-shadow: 0 10px 30px rgba(0,212,255,0.04), 0 0 30px rgba(139,92,246,0.03) inset;
+      color:#eff9ff;
+    }
+
+    /* main card */
+    main{
+      min-height:520px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border-radius:12px; padding:18px; border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position:relative;
+    }
+
+    /* neon controls */
+    .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+    .neon-btn{
+      padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); cursor:pointer;
+      background:transparent; color:#e6f7ff; font-weight:700; letter-spacing:0.6px;
+      position:relative; overflow:visible;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .neon-btn::before{
+      content:""; position:absolute; inset:0; border-radius:10px;
+      background: linear-gradient(90deg, rgba(139,92,246,0.05), rgba(0,212,255,0.03));
+      filter: blur(8px); opacity:0; transition: opacity .18s ease;
+    }
+    .neon-btn:hover{ transform:translateY(-3px); }
+    .neon-btn:hover::before{ opacity:1; }
+    .neon-primary{
+      box-shadow: 0 6px 30px rgba(0,212,255,0.06), 0 0 40px rgba(139,92,246,0.04) inset;
+      border:1px solid rgba(0,212,255,0.22);
+      background: linear-gradient(90deg, rgba(139,92,246,0.06), rgba(0,212,255,0.03));
+    }
+
+    /* inputs and textareas */
+    input, textarea, select {
+      width:100%; padding:10px 12px; border-radius:8px; background: rgba(7,20,36,0.5);
+      border:1px solid rgba(255,255,255,0.03); color:#dff6ff; box-sizing:border-box; outline:none;
+      font-size:14px;
+    }
+    textarea { min-height:80px; resize:vertical; color:#dff6ff; }
+    input::placeholder, textarea::placeholder{ color: rgba(223,246,255,0.35); }
+
+    /* pre code */
+    pre{
+      background: linear-gradient(180deg, rgba(2,6,23,0.9), rgba(3,7,20,0.85));
+      padding:12px; border-radius:8px; overflow:auto; color:#bfefff; border:1px solid rgba(255,255,255,0.02);
+      box-shadow: inset 0 -6px 16px rgba(0,0,0,0.4);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      font-size:13px;
+    }
+
+    /* small helpers */
+    .muted{ color:var(--muted); }
+    .row{ display:flex; gap:8px; align-items:center; }
+    .panel{ margin-bottom:12px; }
+
+    /* snip list */
+    #snip_list > div{ margin-bottom:10px; border-radius:8px; padding:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:1px solid rgba(255,255,255,0.02); }
+    #snip_list .meta{ font-size:12px; color:var(--muted); margin-top:4px; }
+
+    /* subtle grid lines background (TRON vibes) */
+    .grid-bg {
+      position:absolute; inset:0; z-index:0; pointer-events:none; mix-blend-mode:overlay;
+      background-image:
+        linear-gradient(transparent 24px, rgba(0,212,255,0.01) 25px),
+        linear-gradient(90deg, transparent 24px, rgba(139,92,246,0.01) 25px);
+      background-size: 100% 100%, 100% 100%;
+      opacity:0.9;
+      transform: translateY(0);
+    }
+
+    /* responsive */
+    @media (max-width:920px){
+      .grid{ grid-template-columns:1fr; }
+      aside{ order:2; }
+      main{ order:1; }
+      header{ flex-direction:column; align-items:flex-start; gap:8px; }
+    }
+
+    /* focus ring for accessibility */
+    input:focus, textarea:focus, button:focus { box-shadow: 0 0 24px rgba(0,212,255,0.06); border-color: rgba(0,212,255,0.22); }
+
+    /* micro animation for headings */
+    h2 { margin:0 0 8px 0; color:#eaffff; font-size:15px; letter-spacing:0.6px; }
+    .meta { font-size:13px; color:var(--muted); margin-top:10px; }
+
+    /* tiny status toast */
+    .toast {
+      position:fixed; right:20px; bottom:20px; background:linear-gradient(90deg, rgba(0,212,255,0.06), rgba(139,92,246,0.04));
+      border:1px solid rgba(0,212,255,0.14); color:#eaffff; padding:10px 14px; border-radius:10px; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      display:none; z-index:9999;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <!-- small futuristic icon -->
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="4" stroke="url(#g)" stroke-width="1.2"/>
+            <path d="M7 12h10M12 7v10" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="g" x1="0" x2="1">
+                <stop offset="0" stop-color="#8b5cf6"/>
+                <stop offset="1" stop-color="#00d4ff"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1>Dev & Helper Toolkit — TRON</h1>
+          <div class="subtitle">Django REST · Vanilla JS · Hi-Tech Interface</div>
+        </div>
+      </div>
+
+      <div class="meta muted">Локально: API <code>/api/snippets/</code> · Открой DevTools → Network для отладки</div>
+    </header>
+
+    <div class="grid" style="position:relative; z-index:5;">
+      <aside>
+        <div class="tools-title">Инструменты</div>
+        <div class="small muted">Выбери блок</div>
+
+        <nav class="nav" aria-label="tools">
+          <button id="nav-snippets" class="active" onclick="selectNav('snippets'); show('snippets')">Сниппеты</button>
+          <button id="nav-json" onclick="selectNav('json'); show('json')">JSON</button>
+          <button id="nav-regex" onclick="selectNav('regex'); show('regex')">Regex</button>
+          <button id="nav-base64" onclick="selectNav('base64'); show('base64')">Base64</button>
+          <button id="nav-password" onclick="selectNav('password'); show('password')">Пароль / UUID</button>
+          <button id="nav-timestamp" onclick="selectNav('timestamp'); show('timestamp')">Timestamp</button>
+          <button id="nav-lorem" onclick="selectNav('lorem'); show('lorem')">Lorem / WordCount / Case</button>
+        </nav>
+
+        <div style="height:14px"></div>
+
+        <div class="small muted">Quick actions</div>
+        <div class="row" style="margin-top:8px">
+          <button class="neon-btn neon-primary" onclick="fetchSnippets()">Обновить сниппеты</button>
+          <button class="neon-btn" onclick="downloadSnippets()">Экспорт JSON</button>
+        </div>
+      </aside>
+
+      <main>
+        <!-- SNIPPETS -->
+        <section id="snippets" class="panel">
+          <h2>Сниппеты (сервер)</h2>
+          <div class="controls">
+            <input id="snip_title" placeholder="Название сниппета" style="max-width:360px" />
+            <button class="neon-btn neon-primary" onclick="saveSnippet()">Сохранить</button>
+            <button class="neon-btn" onclick="fetchSnippets()">Обновить</button>
+            <div style="flex:1"></div>
+            <div class="small muted">Сниппеты хранятся на сервере (Django REST)</div>
+          </div>
+
+          <textarea id="snip_code" rows="8" placeholder="// Вставь код..."></textarea>
+
+          <div id="snip_list" style="margin-top:12px"></div>
+        </section>
+
+        <!-- JSON -->
+        <section id="json" class="panel" style="display:none">
+          <h2>JSON Formatter / Validator</h2>
+          <div class="controls" style="margin-bottom:10px">
+            <button class="neon-btn neon-primary" onclick="formatJson()">Форматировать</button>
+            <button class="neon-btn" onclick="minifyJson()">Сжать</button>
+            <button class="neon-btn" onclick="copyOutput('json_out')">Копировать</button>
+            <div style="flex:1"></div>
+            <div class="small muted">Вставь JSON в левое поле</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr; gap:8px">
+            <textarea id="json_in" rows="12" placeholder='{"foo": "bar"}'></textarea>
+            <textarea id="json_out" rows="12" readonly placeholder="Результат"></textarea>
+          </div>
+        </section>
+
+        <!-- REGEX -->
+        <section id="regex" class="panel" style="display:none">
+          <h2>Regex Tester</h2>
+          <div class="controls" style="margin-bottom:8px">
+            <input id="re_pattern" placeholder="паттерн, напр. (\d+)" style="max-width:360px" />
+            <input id="re_flags" placeholder="flags, напр. gi" style="width:120px" />
+            <button class="neon-btn neon-primary" onclick="runRegex()">Запустить</button>
+            <div style="flex:1"></div>
+          </div>
+          <textarea id="re_text" rows="6" placeholder="Тестовая строка"></textarea>
+          <pre id="re_result" style="margin-top:8px">Результат появится здесь</pre>
+        </section>
+
+        <!-- BASE64 -->
+        <section id="base64" class="panel" style="display:none">
+          <h2>Base64 Encode / Decode</h2>
+          <div class="controls" style="margin-bottom:8px">
+            <button class="neon-btn neon-primary" onclick="b64encode()">Encode</button>
+            <button class="neon-btn" onclick="b64decode()">Decode</button>
+            <button class="neon-btn" onclick="copyOutput('b64_out')">Копировать</button>
+            <div style="flex:1"></div>
+          </div>
+          <textarea id="b64_in" rows="6" placeholder="Текст или Base64"></textarea>
+          <textarea id="b64_out" rows="4" readonly placeholder="Результат"></textarea>
+        </section>
+
+        <!-- PASSWORD / UUID -->
+        <section id="password" class="panel" style="display:none">
+          <h2>Генератор паролей / UUID</h2>
+          <div class="controls" style="margin-bottom:8px">
+            <input id="pw_len" type="number" value="16" style="width:110px" />
+            <label class="small muted" style="display:flex;align-items:center;gap:6px">Symbols <input id="pw_sym" type="checkbox" checked /></label>
+            <button class="neon-btn neon-primary" onclick="genPassword()">Сгенерировать</button>
+            <button class="neon-btn" onclick="genUUID()">UUID</button>
+            <button class="neon-btn" onclick="copyOutput('pw_out')">Копировать</button>
+            <div style="flex:1"></div>
+          </div>
+          <input id="pw_out" readonly />
+        </section>
+
+        <!-- TIMESTAMP -->
+        <section id="timestamp" class="panel" style="display:none">
+          <h2>Timestamp Converter</h2>
+          <div class="controls" style="margin-bottom:8px">
+            <input id="ts_in" placeholder="1697049600 или 1697049600000 или 2023-10-11T00:00:00Z" />
+            <button class="neon-btn neon-primary" onclick="convTimestamp()">Конвертировать</button>
+            <button class="neon-btn" onclick="clearTimestamp()">Очистить</button>
+            <div style="flex:1"></div>
+          </div>
+          <textarea id="ts_out" rows="3" readonly></textarea>
+        </section>
+
+        <!-- LOREM / WORDCOUNT / CASE -->
+        <section id="lorem" class="panel" style="display:none">
+          <h2>Lorem / Word Count / Case</h2>
+          <div class="controls" style="margin-bottom:8px">
+            <input id="lorem_par" type="number" value="1" style="width:90px" />
+            <button class="neon-btn neon-primary" onclick="makeLorem()">Создать</button>
+            <button class="neon-btn" onclick="clearLorem()">Очистить</button>
+            <div style="flex:1"></div>
+          </div>
+          <textarea id="lorem_out" rows="4" readonly></textarea>
+
+          <hr style="margin:16px 0; border:0; border-top:1px solid rgba(255,255,255,0.03)" />
+
+          <h3 style="margin-top:0">Word Count</h3>
+          <textarea id="wc_in" rows="4" placeholder="Вставь текст..."></textarea>
+          <div class="controls" style="margin-top:8px">
+            <div class="small muted">Слов: <strong id="wc_val">0</strong></div>
+            <button class="neon-btn" onclick="countWords()">Посчитать</button>
+            <div style="flex:1"></div>
+          </div>
+
+          <hr style="margin:16px 0; border:0; border-top:1px solid rgba(255,255,255,0.03)" />
+
+          <h3 style="margin-top:0">Case Converter</h3>
+          <textarea id="case_in" rows="3" placeholder="Текст..."></textarea>
+          <div class="controls" style="margin-top:8px">
+            <button class="neon-btn neon-primary" onclick="convertCase('upper')">UPPER</button>
+            <button class="neon-btn" onclick="convertCase('lower')">lower</button>
+            <button class="neon-btn" onclick="convertCase('title')">Title Case</button>
+            <button class="neon-btn" onclick="copyOutput('case_out')">Копировать</button>
+            <div style="flex:1"></div>
+          </div>
+          <input id="case_out" readonly style="margin-top:8px" />
+        </section>
+
+      </main>
+    </div>
+
+    <div class="toast" id="toast">Готово</div>
+  </div>
+
+  <script>
+  // ---------------- preserved logic (with TRON UI) ----------------
+
+  // UI helpers
+  function show(id){
+    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'block';
+  }
+
+  function selectNav(id){
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('nav-' + id);
+    if(btn) btn.classList.add('active');
+  }
+
+  // initial
+  show('snippets');
+
+  // API base
+  const API_BASE = '/api/snippets/';
+
+  // Toast helper
+  function toast(msg, time=1600){
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.style.display = 'block';
+    t.style.opacity = '1';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(()=>{ t.style.display='none'; }, time);
+  }
+
+  // --- Snippets (server) ---
+  async function fetchSnippets(){
+    try{
+      const res = await fetch(API_BASE);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const list = document.getElementById('snip_list');
+      list.innerHTML = data.map(s => `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong style="display:block">${escapeHtml(s.title)}</strong>
+              <div class="meta muted">${new Date(s.created_at).toLocaleString()}</div>
+            </div>
+            <div class="row">
+              <button class="neon-btn" onclick="loadSnippet(${s.id})">Загрузить</button>
+              <button class="neon-btn" onclick="deleteSnippet(${s.id})">Удалить</button>
+            </div>
+          </div>
+          <pre>${escapeHtml(s.code)}</pre>
+        </div>
+      `).join('');
+      toast('Сниппеты загружены');
+    }catch(e){
+      // if response is HTML (like login page) res.json() will throw — show raw
+      alert('Ошибка при получении сниппетов: ' + e.message + '\\nПроверь URL: ' + API_BASE);
+      console.error(e);
+    }
+  }
+
+  async function saveSnippet(){
+    const title = document.getElementById('snip_title').value.trim();
+    const code = document.getElementById('snip_code').value;
+    if(!title){ alert('Укажи название'); return; }
+    try{
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify({title, code})
+      });
+      if(!res.ok){
+        const text = await res.text().catch(()=>null);
+        throw new Error('HTTP ' + res.status + (text ? ' — ' + text.slice(0,200) : ''));
+      }
+      document.getElementById('snip_title').value = '';
+      document.getElementById('snip_code').value = '';
+      fetchSnippets();
+      toast('Сниппет сохранён');
+    }catch(e){
+      alert('Ошибка при сохранении: ' + e.message);
+      console.error(e);
+    }
+  }
+
+  async function deleteSnippet(id){
+    if(!confirm('Удалить сниппет #' + id + '?')) return;
+    try{
+      const res = await fetch(API_BASE + id + '/', {method:'DELETE', headers:{'X-CSRFToken': getCookie('csrftoken')}});
+      if(res.status === 204){
+        fetchSnippets();
+        toast('Удалено');
+      } else {
+        const text = await res.text().catch(()=>null);
+        alert('Ошибка удаления: ' + res.status + (text ? ' — ' + text.slice(0,200) : ''));
+      }
+    }catch(e){
+      alert('Ошибка: ' + e.message);
+      console.error(e);
+    }
+  }
+
+  async function loadSnippet(id){
+    try{
+      const res = await fetch(API_BASE + id + '/');
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const s = await res.json();
+      document.getElementById('snip_title').value = s.title;
+      document.getElementById('snip_code').value = s.code;
+      toast('Сниппет загружен');
+    }catch(e){ alert('Ошибка: ' + e.message); console.error(e); }
+  }
+
+  // export utility
+  function downloadSnippets(){
+    // naive export by fetching then saving
+    fetch(API_BASE).then(r => r.json()).then(data => {
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'snippets.json'; a.click();
+      URL.revokeObjectURL(url);
+      toast('Экспорт готов');
+    }).catch(e => { alert('Ошибка экспорта: ' + e.message); });
+  }
+
+  // --- JSON ---
+  function formatJson(){
+    const inTxt = document.getElementById('json_in').value;
+    try{
+      const obj = JSON.parse(inTxt);
+      document.getElementById('json_out').value = JSON.stringify(obj, null, 2);
+    }catch(e){
+      document.getElementById('json_out').value = 'Error: ' + e.message;
+    }
+  }
+  function minifyJson(){
+    const inTxt = document.getElementById('json_in').value;
+    try{
+      const obj = JSON.parse(inTxt);
+      document.getElementById('json_out').value = JSON.stringify(obj);
+    }catch(e){
+      document.getElementById('json_out').value = 'Error: ' + e.message;
+    }
+  }
+
+  // --- Regex ---
+  function runRegex(){
+    const pat = document.getElementById('re_pattern').value;
+    const flags = document.getElementById('re_flags').value;
+    const text = document.getElementById('re_text').value;
+    try{
+      const r = new RegExp(pat, flags);
+      let out = [];
+      if(r.global){
+        let m;
+        while((m = r.exec(text)) !== null){
+          out.push({match:m[0], index:m.index, groups: m.slice(1)});
+          if(m.index === r.lastIndex) r.lastIndex++;
+        }
+      } else {
+        const m = r.exec(text);
+        if(m) out.push({match:m[0], index:m.index, groups: m.slice(1)});
+      }
+      document.getElementById('re_result').innerText = out.length ? JSON.stringify(out, null, 2) : 'Ничего не найдено';
+    }catch(e){
+      document.getElementById('re_result').innerText = 'Error: ' + e.message;
+    }
+  }
+
+  // --- Base64 ---
+  function b64encode(){
+    try{
+      const inTxt = document.getElementById('b64_in').value;
+      const encoded = btoa(unescape(encodeURIComponent(inTxt)));
+      document.getElementById('b64_out').value = encoded;
+      toast('Закодировано');
+    }catch(e){
+      document.getElementById('b64_out').value = 'Error: ' + e.message;
+    }
+  }
+  function b64decode(){
+    try{
+      const inTxt = document.getElementById('b64_in').value.trim();
+      const decoded = decodeURIComponent(escape(atob(inTxt)));
+      document.getElementById('b64_out').value = decoded;
+      toast('Декодировано');
+    }catch(e){
+      document.getElementById('b64_out').value = 'Error: ' + e.message;
+    }
+  }
+
+  // --- Password / UUID ---
+  function genPassword(){
+    const len = Number(document.getElementById('pw_len').value) || 16;
+    const useSym = document.getElementById('pw_sym').checked;
+    const lower = 'abcdefghijklmnopqrstuvwxyz';
+    const upper = lower.toUpperCase();
+    const nums = '0123456789';
+    const syms = '!@#$%^&*()-_=+[]{};:,.<>/?';
+    let chars = lower + upper + nums + (useSym ? syms : '');
+    let res = '';
+    try{
+      const rnd = crypto.getRandomValues(new Uint32Array(len));
+      for(let i=0;i<len;i++) res += chars[rnd[i] % chars.length];
+    }catch(e){
+      for(let i=0;i<len;i++) res += chars[Math.floor(Math.random()*chars.length)];
+    }
+    document.getElementById('pw_out').value = res;
+    toast('Пароль сгенерирован');
+  }
+  function genUUID(){
+    try{
+      const arr = crypto.getRandomValues(new Uint8Array(16));
+      arr[6] = (arr[6] & 0x0f) | 0x40;
+      arr[8] = (arr[8] & 0x3f) | 0x80;
+      const hex = Array.from(arr).map(b => b.toString(16).padStart(2,'0')).join('');
+      const uuid = hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);
+      document.getElementById('pw_out').value = uuid;
+      toast('UUID готов');
+    }catch(e){
+      document.getElementById('pw_out').value = 'Error: ' + e.message;
+    }
+  }
+
+  // --- Timestamp ---
+  function convTimestamp(){
+    const v = document.getElementById('ts_in').value.trim();
+    if(!v) return;
+    if(/^-?\d+$/.test(v)){
+      const n = Number(v);
+      const date = Math.abs(n) > 1e12 ? new Date(n) : new Date(n*1000);
+      if(isNaN(date.getTime())) document.getElementById('ts_out').value = 'Invalid numeric timestamp';
+      else document.getElementById('ts_out').value = date.toString() + ' — ' + Math.floor(date.getTime()/1000) + ' (s)';
+      toast('Конвертировано');
+      return;
+    }
+    const d = new Date(v);
+    if(isNaN(d.getTime())) document.getElementById('ts_out').value = 'Invalid date string';
+    else document.getElementById('ts_out').value = d.toString() + ' — ' + Math.floor(d.getTime()/1000) + ' (s)';
+    toast('Конвертация даты');
+  }
+  function clearTimestamp(){ document.getElementById('ts_in').value=''; document.getElementById('ts_out').value=''; }
+
+  // --- Lorem / WordCount / Case ---
+  function makeLorem(){
+    const p = Math.max(1, Math.min(10, Number(document.getElementById('lorem_par').value) || 1));
+    const base = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.";
+    document.getElementById('lorem_out').value = Array.from({length:p}).map(()=>base).join('\\n\\n');
+    toast('Lorem создан');
+  }
+  function clearLorem(){ document.getElementById('lorem_out').value=''; }
+  function countWords(){
+    const s = document.getElementById('wc_in').value.trim();
+    const n = s ? s.split(/\\s+/).length : 0;
+    document.getElementById('wc_val').innerText = n;
+    toast('Подсчёт завершён');
+  }
+  function convertCase(mode){
+    const s = document.getElementById('case_in').value;
+    if(!s) return;
+    if(mode==='upper') document.getElementById('case_out').value = s.toUpperCase();
+    if(mode==='lower') document.getElementById('case_out').value = s.toLowerCase();
+    if(mode==='title') document.getElementById('case_out').value = s.replace(/\\w\\S*/g, w => w[0].toUpperCase()+w.slice(1).toLowerCase());
+    toast('Преобразовано');
+  }
+
+  // --- utils ---
+  function escapeHtml(s){ return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+  function copyOutput(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    // select for textarea/input
+    try{
+      if(el.select){ el.select(); }
+      navigator.clipboard.writeText(el.value || el.innerText || '').then(()=> toast('Скопировано'), ()=> alert('Не удалось скопировать'));
+    }catch(e){ alert('Не удалось скопировать: '+e.message); }
+  }
+
+  // CSRF helper for Django
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  // load snippets on start
+  fetchSnippets();
+
+  // accessibility: keyboard nav between panels (1..7)
+  document.addEventListener('keydown', (e) => {
+    if(e.altKey && !e.shiftKey){
+      if(e.key === '1') { selectNav('snippets'); show('snippets'); }
+      if(e.key === '2') { selectNav('json'); show('json'); }
+      if(e.key === '3') { selectNav('regex'); show('regex'); }
+      if(e.key === '4') { selectNav('base64'); show('base64'); }
+      if(e.key === '5') { selectNav('password'); show('password'); }
+      if(e.key === '6') { selectNav('timestamp'); show('timestamp'); }
+      if(e.key === '7') { selectNav('lorem'); show('lorem'); }
+    }
+  });
+
+  </script>
+</body>
+</html>

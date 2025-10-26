@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Snippets — TRON Hub</title>
+  <style>
+    /* ---------------- TRON-heavy Snippets page ---------------- */
+    :root{
+      --bg-1:#02040a;
+      --bg-2:#04102a;
+      --neon-cyan:#00d4ff;
+      --neon-violet:#8b5cf6;
+      --muted:#7f9ab0;
+      --panel: rgba(255,255,255,0.02);
+      --glass: rgba(255,255,255,0.02);
+      --accent: linear-gradient(90deg,var(--neon-violet),var(--neon-cyan));
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial, "Courier New", monospace;color:#dff6ff}
+    body{
+      background:
+        radial-gradient(800px 360px at 10% 12%, rgba(0,212,255,0.04), transparent),
+        radial-gradient(700px 300px at 90% 88%, rgba(139,92,246,0.03), transparent),
+        linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      padding:28px;
+    }
+    .container{ max-width:1200px; margin:0 auto; position:relative; }
+
+    /* header */
+    header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px; }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .logo{
+      width:56px;height:56px;border-radius:12px;display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03); box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+    h1{ margin:0;font-size:20px; color:#eaffff; letter-spacing:0.6px; text-shadow: 0 8px 30px rgba(0,212,255,0.03); }
+    .subtitle{ color:var(--muted); font-size:13px }
+
+    /* main layout */
+    .layout{ display:grid; grid-template-columns:320px 1fr; gap:18px; position:relative; }
+    @media (max-width:920px){ .layout{ grid-template-columns:1fr } }
+
+    /* left panel */
+    .panel-left{
+      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    .nav-btn{ display:block; width:100%; text-align:left; padding:10px 12px; border-radius:10px; margin-bottom:8px;
+      background:transparent; border:1px solid rgba(255,255,255,0.03); color:#dff6ff; cursor:pointer; font-weight:700;
+      transition: transform .12s ease, box-shadow .12s ease; }
+    .nav-btn:hover{ transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.55); }
+    .nav-btn.active{
+      background: var(--accent); color:#001018; box-shadow: 0 12px 40px rgba(0,212,255,0.06);
+      border:1px solid rgba(0,212,255,0.22);
+    }
+
+    /* right panel (main) */
+    .panel-main{
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));
+      padding:18px; border-radius:12px; border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.6);
+      min-height:520px; position:relative;
+    }
+
+    /* controls */
+    .controls{ display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap }
+    .neon-btn{
+      padding:10px 14px; border-radius:10px; background:transparent; color:#e6fbff; border:1px solid rgba(255,255,255,0.03); cursor:pointer; font-weight:800;
+      position:relative; transition: all .12s ease; overflow:visible;
+    }
+    .neon-primary{
+      background: linear-gradient(90deg, rgba(139,92,246,0.08), rgba(0,212,255,0.03));
+      border:1px solid rgba(0,212,255,0.16);
+      box-shadow: 0 10px 30px rgba(0,212,255,0.04), 0 0 22px rgba(139,92,246,0.02) inset;
+    }
+
+    /* form controls */
+    input[type="text"], textarea {
+      width:100%; padding:10px 12px; border-radius:8px; background: rgba(3,12,24,0.6);
+      border:1px solid rgba(255,255,255,0.03); color:#dff6ff; outline:none; font-family:monospace;
+    }
+    textarea{ min-height:140px; resize:vertical }
+    input::placeholder, textarea::placeholder{ color: rgba(223,246,255,0.3) }
+
+    /* snippets list */
+    .snip-list{ display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+    .snip-card{
+      display:grid; grid-template-columns: 1fr 160px; gap:12px; align-items:start;
+      padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .snip-card .meta{ color:var(--muted); font-size:12px; margin-bottom:8px }
+    .snip-code{
+      background: linear-gradient(180deg, rgba(2,6,23,0.9), rgba(3,7,20,0.85));
+      padding:10px; border-radius:8px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size:13px; color:#bfefff; overflow:auto; max-height:220px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .card-actions{ display:flex; flex-direction:column; gap:8px; align-items:stretch; }
+
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:8px 10px; border-radius:8px; background:transparent; color: #dff6ff; border:1px solid rgba(255,255,255,0.03);
+      cursor:pointer; font-weight:700;
+    }
+    .icon-btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.55); }
+
+    /* modal */
+    .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:9999; }
+    .modal{ width:880px; max-width:95%; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:18px; border:1px solid rgba(255,255,255,0.03); box-shadow: 0 30px 80px rgba(0,0,0,0.8);}
+    .modal h3{ margin:0 0 8px 0 }
+    .modal .row{ margin-top:10px; display:flex; gap:8px; align-items:center }
+    .close-x{ position:absolute; right:12px; top:12px; cursor:pointer; padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.03); }
+
+    /* toast */
+    .toast{
+      position:fixed; right:20px; bottom:20px; background: linear-gradient(90deg, rgba(0,212,255,0.06), rgba(139,92,246,0.04));
+      color:#eaffff; padding:10px 14px; border-radius:10px; border:1px solid rgba(0,212,255,0.12); display:none; z-index:10000;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="4" stroke="url(#g)" stroke-width="1.2"/>
+            <path d="M7 12h10M12 7v10" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="g" x1="0" x2="1">
+                <stop offset="0" stop-color="#8b5cf6"/>
+                <stop offset="1" stop-color="#00d4ff"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1>Snippets — TRON Hub</h1>
+          <div class="subtitle">Тестовая страница сниппетов — интерфейс и API</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="subtitle">API: <code>/api/snippets/</code></div>
+        <button class="neon-btn" onclick="fetchSnippets()">Обновить</button>
+        <button class="neon-btn neon-primary" onclick="openNewModal()">Новый сниппет</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="panel-left" aria-hidden="false">
+        <div style="font-weight:800;color:#eaffff">Навигация</div>
+        <div class="subtitle" style="margin-bottom:12px">Быстрые действия</div>
+        <button class="nav-btn active" onclick="showPanel('all')">Все сниппеты</button>
+        <button class="nav-btn" onclick="showPanel('recent')">Недавние</button>
+        <button class="nav-btn" onclick="showPanel('search')">Поиск</button>
+
+        <div style="height:12px"></div>
+        <div style="font-size:13px;color:var(--muted)">Советы</div>
+        <div style="margin-top:8px;color:var(--muted);font-size:13px">
+          • Используй кнопки справа на карточках для действий.<br>
+          • Открой DevTools → Network для отладки API.
+        </div>
+      </aside>
+
+      <main class="panel-main">
+        <!-- top controls / quick create -->
+        <div class="controls">
+          <input id="quick_title" type="text" placeholder="Название (быстрое)" style="max-width:360px" />
+          <input id="quick_code" type="text" placeholder="Короткий код (быстро)" style="max-width:420px" />
+          <button class="neon-btn neon-primary" onclick="quickCreate()">Быстро добавить</button>
+        </div>
+
+        <!-- list -->
+        <div id="snip_container" class="snip-list" aria-live="polite">
+          <!-- populated by JS -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- modal for create / edit -->
+  <div class="modal-backdrop" id="modal_backdrop" role="dialog" aria-modal="true">
+    <div class="modal" role="document">
+      <div style="position:relative">
+        <button class="close-x" onclick="closeModal()">✖</button>
+        <h3 id="modal_title">Новый сниппет</h3>
+      </div>
+
+      <div style="margin-top:12px">
+        <label class="small muted">Название</label>
+        <input id="modal_title_input" type="text" placeholder="Название сниппета" />
+      </div>
+      <div style="margin-top:10px">
+        <label class="small muted">Код</label>
+        <textarea id="modal_code_input" placeholder="// код..."></textarea>
+      </div>
+
+      <div class="row" style="justify-content:flex-end; margin-top:12px">
+        <button class="neon-btn" onclick="closeModal()">Отмена</button>
+        <button class="neon-btn neon-primary" id="modal_save_btn" onclick="saveModal()">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Готово</div>
+
+  <script>
+    // ---------------- utils & CSRF ----------------
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function toast(msg, t = 1500){
+      const el = document.getElementById('toast');
+      el.innerText = msg;
+      el.style.display = 'block';
+      clearTimeout(el._to);
+      el._to = setTimeout(()=> el.style.display = 'none', t);
+    }
+
+    function escapeHtml(s){
+      if (s === null || s === undefined) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ---------------- state ----------------
+    const API_BASE = '/api/snippets/';
+    let currentEditId = null;
+
+    // ---------------- modal ----------------
+    function openNewModal(){
+      currentEditId = null;
+      document.getElementById('modal_title').innerText = 'Новый сниппет';
+      document.getElementById('modal_title_input').value = '';
+      document.getElementById('modal_code_input').value = '';
+      document.getElementById('modal_backdrop').style.display = 'flex';
+    }
+    function openEditModal(id, title, code){
+      currentEditId = id;
+      document.getElementById('modal_title').innerText = 'Редактировать сниппет #' + id;
+      document.getElementById('modal_title_input').value = title || '';
+      document.getElementById('modal_code_input').value = code || '';
+      document.getElementById('modal_backdrop').style.display = 'flex';
+    }
+    function closeModal(){ document.getElementById('modal_backdrop').style.display = 'none'; }
+
+    async function saveModal(){
+      const title = document.getElementById('modal_title_input').value.trim();
+      const code = document.getElementById('modal_code_input').value;
+      if(!title){ alert('Укажи название'); return; }
+      try{
+        if(currentEditId){
+          // PATCH
+          const res = await fetch(API_BASE + currentEditId + '/', {
+            method: 'PATCH',
+            headers: {'Content-Type':'application/json','X-CSRFToken': csrftoken},
+            body: JSON.stringify({ title, code })
+          });
+          if(!res.ok){
+            const txt = await safeText(res);
+            throw new Error('HTTP ' + res.status + (txt? ' — ' + txt.slice(0,200):''));
+          }
+          toast('Сниппет обновлён');
+        } else {
+          // POST
+          const res = await fetch(API_BASE, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRFToken': csrftoken},
+            body: JSON.stringify({ title, code })
+          });
+          if(!res.ok){
+            const txt = await safeText(res);
+            throw new Error('HTTP ' + res.status + (txt? ' — ' + txt.slice(0,200):''));
+          }
+          toast('Сниппет создан');
+        }
+        closeModal();
+        await fetchSnippets();
+      }catch(e){
+        console.error(e);
+        alert('Ошибка: ' + e.message);
+      }
+    }
+
+    // safe reading text if response is HTML
+    async function safeText(response){
+      try{ return await response.text(); }catch(e){ return null; }
+    }
+
+    // ---------------- list / CRUD ----------------
+    async function fetchSnippets(){
+      try{
+        const res = await fetch(API_BASE);
+        if(!res.ok){
+          const t = await safeText(res);
+          throw new Error('HTTP ' + res.status + (t? ' — ' + (t.slice(0,200)) : ''));
+        }
+        const data = await res.json();
+        renderList(data);
+        toast('Сниппеты загружены');
+      }catch(e){
+        console.error(e);
+        alert('Ошибка при получении сниппетов: ' + e.message + '\\nПроверь API: ' + API_BASE);
+      }
+    }
+
+    function renderList(items){
+      const container = document.getElementById('snip_container');
+      container.innerHTML = '';
+      if(!items || items.length === 0){
+        container.innerHTML = '<div class="muted" style="color:var(--muted);padding:18px;border-radius:8px">Нет сниппетов — добавь первый.</div>';
+        return;
+      }
+      // map items to cards
+      for(const s of items){
+        const card = document.createElement('div');
+        card.className = 'snip-card';
+
+        const left = document.createElement('div');
+        const title = document.createElement('div');
+        title.innerHTML = '<strong>' + escapeHtml(s.title) + '</strong>';
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        const dt = s.created_at ? new Date(s.created_at).toLocaleString() : '';
+        meta.innerText = dt;
+
+        const code = document.createElement('pre');
+        code.className = 'snip-code';
+        code.textContent = s.code || '';
+
+        left.appendChild(title);
+        left.appendChild(meta);
+        left.appendChild(code);
+
+        const actions = document.createElement('div');
+        actions.className = 'card-actions';
+
+        const btnCopy = document.createElement('button');
+        btnCopy.className = 'icon-btn';
+        btnCopy.innerText = 'Копировать';
+        btnCopy.onclick = ()=> { copyToClipboard(s.code || ''); toast('Скопировано'); };
+
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'icon-btn';
+        btnEdit.innerText = 'Редактировать';
+        btnEdit.onclick = ()=> openEditModal(s.id, s.title, s.code);
+
+        const btnDelete = document.createElement('button');
+        btnDelete.className = 'icon-btn';
+        btnDelete.innerText = 'Удалить';
+        btnDelete.onclick = ()=> deleteSnippet(s.id);
+
+        actions.appendChild(btnCopy);
+        actions.appendChild(btnEdit);
+        actions.appendChild(btnDelete);
+
+        card.appendChild(left);
+        card.appendChild(actions);
+
+        container.appendChild(card);
+      }
+    }
+
+    async function quickCreate(){
+      const title = document.getElementById('quick_title').value.trim();
+      const code = document.getElementById('quick_code').value;
+      if(!title){ alert('Укажи название'); return; }
+      try{
+        const res = await fetch(API_BASE, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','X-CSRFToken': csrftoken},
+          body: JSON.stringify({ title, code })
+        });
+        if(!res.ok){
+          const t = await safeText(res);
+          throw new Error('HTTP ' + res.status + (t? ' — ' + t.slice(0,200):''));
+        }
+        document.getElementById('quick_title').value = '';
+        document.getElementById('quick_code').value = '';
+        await fetchSnippets();
+        toast('Создано');
+      }catch(e){
+        console.error(e);
+        alert('Ошибка создания: ' + e.message);
+      }
+    }
+
+    async function deleteSnippet(id){
+      if(!confirm('Удалить сниппет #' + id + '?')) return;
+      try{
+        const res = await fetch(API_BASE + id + '/', {
+          method: 'DELETE',
+          headers: {'X-CSRFToken': csrftoken}
+        });
+        if(res.status === 204){
+          toast('Удалено');
+          await fetchSnippets();
+        } else {
+          const t = await safeText(res);
+          throw new Error('HTTP ' + res.status + (t? ' — ' + t.slice(0,200):''));
+        }
+      }catch(e){
+        console.error(e);
+        alert('Ошибка удаления: ' + e.message);
+      }
+    }
+
+    // ---------------- helpers ----------------
+    function copyToClipboard(text){
+      try{
+        navigator.clipboard.writeText(text);
+      }catch(e){
+        // fallback
+        const tmp = document.createElement('textarea');
+        tmp.value = text; document.body.appendChild(tmp); tmp.select();
+        try{ document.execCommand('copy'); }catch(_){} tmp.remove();
+      }
+    }
+
+    function showPanel(name){
+      // placeholder: we only have one panel for now
+      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b=>{ if(b.textContent.toLowerCase().includes(name)) b.classList.add('active') });
+      // could implement filtering (recent/search) here
+      if(name === 'recent'){
+        // naive: fetch and render only latest 5
+        fetch(API_BASE).then(r=>r.json()).then(data=>{
+          const sorted = data.sort((a,b)=> new Date(b.created_at) - new Date(a.created_at)).slice(0,5);
+          renderList(sorted);
+        }).catch(e=>console.error(e));
+      } else {
+        fetchSnippets();
+      }
+    }
+
+    // initial load
+    fetchSnippets();
+
+    // keyboard: N for new
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'n' && !e.metaKey && !e.ctrlKey){
+        openNewModal();
+      }
+    });
+
+  </script>
+</body>
+</html>
